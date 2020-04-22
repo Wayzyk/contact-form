@@ -1,10 +1,13 @@
 <h1>Contact Form</h1>
 
-<form action="/" method="post">
+<form action="/" method="post" enctype="multipart/form-data">
   Your name:<br> <input type="text" name="user_name" value="<%= @user_name %>"><br>
   Your email:<br> <input type="text" name="email" value="<%= @email %>"><br>
   Message:<br> <input type="text" name="message" value="<%= @message %>"><br>
   <p><strong><%= @error %></strong></p>
+  Upload file:
+    <br><input type="file" name="file" value=""><br>
+  <%= recaptcha_tags %>
 
   <input type="submit">
 </form>
