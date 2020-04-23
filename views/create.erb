@@ -1,13 +1,127 @@
-<h1>Contact Form</h1>
+<div class="row mt-5">
+	<div class="col-lg-12">
+		<div class="card">
+			<div class="card-header text-center">
+				<h4>Feedback form</h4>
+			</div>
+			<div class="card-body">
+				<form method="POST" data-url="/" id="contact_form">
+					<div class="form-group">
+						<label for="name">Name</label>
+						<input type="text" class="form-control required" name="name" data-min="3" data-max="250" id="name_input" maxlength="250" aria-describedby="nameHelp" placeholder="Enter your name">
+						<small id="nameHelp" class="form-text text-muted">Should be more than 3 symbols, but not more than 250</small>
+					</div>
+					<div class="form-group">
+						<label for="email_input">Email address</label>
+						<input type="email" class="form-control required" id="email_input" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+						<small id="emailHelp" class="form-text text-muted inline-block">Should be in format "example@example.com"</small>
+					</div>
+					<div class="form-group">
+						<label for="message_input">Message</label>
+						<textarea class="form-control required" style="min-height: 120px;" id="message_input" data-min="500" name="message" aria-describedby="messageHelp" placeholder="Enter message"></textarea>
+						<small class="text-muted">Shouldn't be less than 500 characters</small>
+						<small class="text-muted float-right word-counter">0/500</small>
+					</div>
+					<div class="form-group">
+						<label for="file_input">File</label>
+						<input type="file" class="form-control-file" id="file_input" name="file">
+					</div>
+					<div class="recaptcha-wrapper">
+						<%= recaptcha_tags action: 'email' %>
+					</div>
+					<div class="form-group text-center">
+						<button type="button" class="btn btn-success" id="form-submit">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
 
-<form action="/" method="post" enctype="multipart/form-data">
-  Your name:<br> <input type="text" name="user_name" value="<%= @user_name %>"><br>
-  Your email:<br> <input type="text" name="email" value="<%= @email %>"><br>
-  Message:<br> <input type="text" name="message" value="<%= @message %>"><br>
-  <p><strong><%= @error %></strong></p>
-  Upload file:
-    <br><input type="file" name="file" value=""><br>
-  <%= recaptcha_tags %>
+<script>
+$(document).ready(function(){
+	updateWordCounter();
 
-  <input type="submit">
-</form>
+	$("#message_input").on("input", function(){
+		updateWordCounter();
+	});
+
+	$("input, textarea").on("input", function(){
+		$(this).parent().find(".error").remove();
+		$(this).parent().find(".text-danger").removeClass("text-danger").addClass("text-muted");
+	});
+
+	$("#form-submit").click(function(){
+		var required_error = $("<small class='text-danger error'>This field is required</small>");
+		var valid = true;
+		$(".required").each(function(i, e){
+			if($(e).val().length === 0){
+				if($(e).parent().find(".error").length === 0){
+					$(e).parent().append(required_error.clone());
+				}
+				valid = false;
+			}
+		});
+
+		$('*[data-min]').each(function(i, e){
+			var min = parseInt($(e).data("min"));
+			if($(e).val().length < min){
+				$(e).parent().find(".text-muted").removeClass("text-muted").addClass("text-danger");
+				valid = false;
+			}
+		});
+
+		$('*[data-max]').each(function(i, e){
+			var max = parseInt($(e).data("max"));
+			if($(e).val().length > max){
+				$(e).parent().find(".text-muted").removeClass("text-muted").addClass("text-danger");
+				valid = false;
+			}
+		});
+
+		var email_regex = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+		if(!email_regex.test($("#email_input").val())){
+			$("#email_input").parent().find(".text-muted").removeClass("text-muted").addClass("text-danger");
+			valid = false;
+		}
+
+		if(valid){
+			$("#form-submit").attr("disabled", true);
+			var file = $("#file_input").prop("files")[0];
+			var fd = new FormData;
+			$("input").each(function(i, e){
+				if($(e).attr("type") !== "file"){
+					fd.append($(e).attr("name"), $(e).val());
+				}
+			});
+			fd.append($("textarea").attr("name"), $("textarea").val());
+			if($("#file_input").prop('files').length !== 0){
+				fd.append("file", $("#file_input").prop('files')[0]);
+			}
+
+			$.ajax({
+				url: $("#contact_form").data("url"),
+				data: fd,
+				type: "POST",
+				processData: false,
+				contentType: false,
+				success: function(data){
+					$("#form-submit").removeAttr("disabled");
+					data = JSON.parse(data);
+					if(data.status === 500 && data.message !== undefined){
+						alert(data.message);
+					}
+					if(data.status === 200){
+						alert("Message has been sent successfully");
+						location.reload();
+					}
+				}
+			})
+		}
+	});
+});
+
+function updateWordCounter(){
+	$(".word-counter").html($("#message_input").val().length + "/" + $("#message_input").data('min'));
+}
+</script>
