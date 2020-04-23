@@ -14,8 +14,8 @@ include Recaptcha::Adapters::ControllerMethods
 include Recaptcha::Adapters::ViewMethods
 
 Recaptcha.configure do |config|
-  config.site_key = '6LdmJu0UAAAAAPxjm1MkAYmkrWAOr8qnbU8JjOjJ'
-  config.secret_key = '6LdmJu0UAAAAANuD-FIq5YLKOtCnwEeO21Pc1uyB'
+  config.site_key = ENV['SITE_KEY']
+  config.secret_key = ENV['SECRET_KEY']
 end
 
 helpers Sinatra::Param
@@ -64,9 +64,9 @@ end
 def pony_options
   {
     address: 'smtp.sendgrid.net',
-    port: '587',
-    user_name: 'app168916132@heroku.com',
-    password: 'duz6tu4m1553',
+    port: ENV[PORT],
+    user_name: ENV[SENDGRID_USERNAME],
+    password: ENV[SENDGRID_PASSWORD],
     authentication: :plain,
     domain: 'sinatraform.herokuapp.com/'
   }

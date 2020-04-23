@@ -11,3 +11,8 @@ gem 'rubocop'
 gem 'sinatra'
 gem 'sinatra-param'
 gem 'sinatra-reloader'
+
+group :test do
+  gem 'rack-test'
+  gem 'rspec'
+end
