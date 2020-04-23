@@ -64,9 +64,9 @@ end
 def pony_options
   {
     address: 'smtp.sendgrid.net',
-    port: ENV['PORT'],
-    user_name: ENV['SENDGRID_USERNAME'],
-    password: ENV['SENDGRID_PASSWORD'],
+    port: '587',
+    user_name: 'app168916132@heroku.com',
+    password: 'duz6tu4m1553',
     authentication: :plain,
     domain: 'sinatraform.herokuapp.com/'
   }
