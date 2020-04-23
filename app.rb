@@ -14,8 +14,8 @@ include Recaptcha::Adapters::ControllerMethods
 include Recaptcha::Adapters::ViewMethods
 
 Recaptcha.configure do |config|
-  config.site_key = ENV['SITE_KEY']
-  config.secret_key = ENV['SECRET_KEY']
+  config.site_key = '6LdmJu0UAAAAAPxjm1MkAYmkrWAOr8qnbU8JjOjJ'
+  config.secret_key = '6LdmJu0UAAAAANuD-FIq5YLKOtCnwEeO21Pc1uyB'
 end
 
 helpers Sinatra::Param
