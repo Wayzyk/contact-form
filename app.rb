@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'bundler/setup'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/param'
+require 'dotenv/load'
 require 'pony'
 require 'recaptcha'
 require 'pry-byebug'
@@ -11,7 +14,7 @@ include Recaptcha::Adapters::ControllerMethods
 include Recaptcha::Adapters::ViewMethods
 
 Recaptcha.configure do |config|
-  config.site_key  = ENV['SITE_KEY']
+  config.site_key = ENV['SITE_KEY']
   config.secret_key = ENV['SECRET_KEY']
 end
 

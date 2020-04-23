@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
-gem 'sinatra'
-gem 'sinatra-reloader'
-gem 'pry-byebug'
-gem 'recaptcha'
+gem 'dotenv'
 gem 'json'
 gem 'pony'
-gem 'sinatra-param'
+gem 'pry-byebug'
+gem 'recaptcha'
 gem 'rubocop'
-gem 'dotenv'
+gem 'sinatra'
+gem 'sinatra-param'
+gem 'sinatra-reloader'
