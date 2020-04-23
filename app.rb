@@ -11,8 +11,8 @@ include Recaptcha::Adapters::ControllerMethods
 include Recaptcha::Adapters::ViewMethods
 
 Recaptcha.configure do |config|
-  config.site_key  = '6Le7oRETAAAAAETt105rjswZ15EuVJiF7BxPROkY'
-  config.secret_key = '6Le7oRETAAAAAL5a8yOmEdmDi3b2pH7mq5iH1bYK'
+  config.site_key  = ENV['SITE_KEY']
+  config.secret_key = ENV['SECRET_KEY']
 end
 
 helpers Sinatra::Param
@@ -23,7 +23,7 @@ end
 
 post '/' do
   begin
-    if !verify_recaptcha(action: 'email')
+    if ENV['RACK_ENV'] == 'production' && !verify_recaptcha(action: 'email')
       raise 'Captcha is not verified'
     end
 
@@ -48,7 +48,7 @@ private
 def send_email(from, body, attachment = nil)
   attachment = {} if attachment.nil?
   Pony.mail(
-    to: "contact-us@example.com",
+    to: params[:email],
     from: from,
     subject: "Feedback from #{params[:name]}",
     body: body,
@@ -60,12 +60,12 @@ end
 
 def pony_options
   {
-    address: 'smtp.gmail.com',
-    port: '587',
-    user_name: 'user',
-    password: 'password',
+    address: 'smtp.sendgrid.net',
+    port: ENV['PORT'],
+    user_name: ENV['SENDGRID_USERNAME'],
+    password: ENV['SENDGRID_PASSWORD'],
     authentication: :plain,
-    domain: 'localhost.localdomain'
+    domain: 'sinatraform.herokuapp.com/'
   }
 end
 
